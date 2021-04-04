@@ -17,13 +17,42 @@ protocol ViewModelType {
 protocol RepositoryProtocol{
     associatedtype Entity
     init()
-    func post() -> Observable<Entity>
+    func post() -> Observable<Entity> //TODO: post parameter 규격정의
     func save(entity: Entity)
 }
 
+struct MoyaApis {
+    let requestBackwardHistory: String = ""
+    let requestHistory: String = ""
+}
+
+struct RealmApis {
+    let requestBackwardHistory: String = ""
+    let requestHistory: String = ""
+}
+
+extension RepositoryProtocol where Self: MoyaRepositoryConvertible {
+    var apis: MoyaApis{
+            get{ return MoyaApis()}
+            set{}
+    }
+}
+
+extension RepositoryProtocol where Self: RealmRepositoryConvertible {
+    var apis: RealmApis{
+            get{ return RealmApis()}
+            set{}
+    }
+}
+
+
+protocol MoyaRepositoryConvertible {}
+protocol RealmRepositoryConvertible {}
+
 
 class PushHistoryEntity {}
-class MoyaRepository<T>: RepositoryProtocol {
+class MoyaRepository<T>: RepositoryProtocol, MoyaRepositoryConvertible{
+    typealias T = Entity
     required init(){}
     func post() -> Observable<T>{
         Observable.create { (_) -> Disposable in
